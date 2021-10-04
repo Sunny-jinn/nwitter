@@ -4,16 +4,18 @@ import { authService } from "../fbase";
 
 function App() {
   const [init, setInit] = useState(false);
-  const [isLoggedIn, setIsLoggedIn] = useState(false);
   const [userObj, setUserObj] = useState(null);
   useEffect(() => {
     authService.onAuthStateChanged((user) => {
       if (user) {
         setUserObj({
+          //object의 크기가 크면 react가 헷갈리니 줄여줌.
           displayName: user.displayName,
           uid: user.uid,
           updateProfile: (args) => user.updateProfile(args),
         });
+      } else {
+        setUserObj(null);
       }
       setInit(true);
     });
@@ -33,7 +35,7 @@ function App() {
       {init ? (
         <AppRouter
           refreshUser={refreshUser}
-          isLoggedIn={isLoggedIn}
+          isLoggedIn={Boolean(userObj)}
           userObj={userObj}
         />
       ) : (
